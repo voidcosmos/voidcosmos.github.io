@@ -7,6 +7,7 @@
   const finalSpeed = 0.2;
 
   let isFinalSpeed = false;
+  let shouldGenerateStar = true;
 
   initializeCanvas();
   populateStars();
@@ -40,12 +41,12 @@
   }
 
   function speedPulse() {
-    console.log('lala');
     speed = 20;
   }
 
   function refresh() {
     clearCanvas();
+    checkGenerateStars();
     checkSpeed();
     layers.map(layer => {
       drawLayer(layer);
@@ -86,6 +87,20 @@
     layer = layer.filter(object => object.id !== element.id);
   }
 
+  function checkGenerateStars() {
+    if (!shouldGenerateStar) return;
+    shouldGenerateStar = false;
+    populateStars();
+    setDelayForStarGeneration();
+  }
+
+  function setDelayForStarGeneration() {
+    setTimeout(
+      () => (shouldGenerateStar = true),
+      getRandomInt(500, 2000) / (speed + 0.9)
+    );
+  }
+
   function populateStars() {
     const starsAmount = isFinalSpeed ? 7 : 12;
 
@@ -99,8 +114,6 @@
       star.y = canvas.height;
       layers[0].push(star);
     }
-
-    setTimeout(() => populateStars(), getRandomInt(500, 2000) / (speed + 0.9));
   }
 
   function nextFrame() {
